@@ -1,4 +1,5 @@
 from models import *
+from rss import get_updates
 import re
 import urllib2
 import json
@@ -7,7 +8,7 @@ _debug = True
 
 base_url = 'http://www.yyets.com/resource/'
 query_url = 'http://www.yyets.com/search/api?keyword='
-def parser(show_id='11005',format='HR-HDTV', season=0, episode=0):
+def find_episodes(show_id='11005',format='HR-HDTV', season=0, episode=0):
 
     try:
         response = urllib2.urlopen(base_url + show_id)
@@ -20,7 +21,7 @@ def parser(show_id='11005',format='HR-HDTV', season=0, episode=0):
     episodes = p.findall(html)
     return episodes
 
-def find_show(name='big%20bang', format='HR-HDTV', season=0, episode=0):
+def find_show(name='s.h.i.e.l.d', format='HR-HDTV', season=0, episode=0):
     
     try:
         response = urllib2.urlopen(query_url+name)
@@ -55,7 +56,7 @@ def find_show(name='big%20bang', format='HR-HDTV', season=0, episode=0):
         show_item = Show()
         show_item.show_id = show['itemid']
         show_item.show_name = show['title']
-        episodes = parser(show_item.show_id, format, season, episode)
+        episodes = find_episodes(show_item.show_id, format, season, episode)
         if _debug:
             print 'find ' + str(len(episodes)) + ' episodes.' 
         for item in episodes:
@@ -70,4 +71,33 @@ def find_show(name='big%20bang', format='HR-HDTV', season=0, episode=0):
         print show_item.latest_episode
     return
 
-find_show()
+def update_show(update_id):
+    if _debug:
+        print 'update :' + update_id
+
+def update_routine():
+    updates = get_updates('HR-HDTV')    
+    shows = Show.objects()
+    if len(shows) == 0:
+        print 'There is no following shows in the db!'
+        return
+    found = False
+    for show in shows:
+        if _debug:
+            print 'finding update of show: ' + show['show_name']
+        for update in updates:
+            if show['show_id'] == update['id'] and \
+            show['updated_at'] < update['date']:
+                update_show(update['id'])
+                if _debug:
+                    print 'found update'
+                found = True
+                break
+        if _debug:
+            if found == False: 
+                print 'no update'
+                
+            
+
+
+update_routine()

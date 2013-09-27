@@ -5,9 +5,7 @@ from datetime import datetime
 from time import mktime
 
 def get_updates(format):
-    format = 'HR-HDTV'
     query = u"?channel=tv&format=" + format
-    # query = u"all"
     query = query.strip()
     rss_url = 'http://www.yyets.com/rss/feed/'
     url_doc = feedparser.parse(rss_url + query)
