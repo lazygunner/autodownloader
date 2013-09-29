@@ -21,13 +21,14 @@ class Show(db.Document):
 class Episode(db.EmbeddedDocument):
     updated_at = db.DateTimeField(default=datetime.datetime.now, required=True)
     format = db.StringField(max_length=255, required=True)
+    index = db.DecimalField()
     season = db.DecimalField()
     episode = db.DecimalField()
     ed2k_link = db.StringField()
 
     meta = {
         'allow_inheritance': True,
-        'ordering': ['-season','-episode']
+        'ordering': ['-index']
     }
 
 
