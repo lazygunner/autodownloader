@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for show in shows %}
+        <h2><a href="">{{ show.show_name }}</a></h2>
+    {% endfor %}
+{% endblock %}
