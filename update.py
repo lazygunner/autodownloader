@@ -3,6 +3,7 @@ from rss import get_updates
 import re
 import urllib2
 import json
+import time
 
 _debug = True
 
@@ -171,7 +172,8 @@ def update_routine():
         if _debug:
             if found == False: 
                 print 'no update'
-                
-            
 
-
+def update_thread():
+    while(True):
+       update_routine()
+       time.sleep(10)
