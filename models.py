@@ -10,7 +10,7 @@ class Show(db.Document):
     show_format = db.StringField(default='HR-HDTV', required=True)
     latest_season = db.DecimalField(default=0)
     latest_episode = db.DecimalField(default=0)
-    episodes = db.ListField(db.EmbeddedDocumentField('Episode'))
+#    episodes = db.ListField(db.EmbeddedDocumentField('Episode'))
 
     meta = {
         'allow_inheritance': True,
@@ -18,16 +18,19 @@ class Show(db.Document):
         'ordering': ['-latest_season','-latest_episode']
     }
 
-class Episode(db.EmbeddedDocument):
+class Episode(db.Document):
     updated_at = db.DateTimeField(default=datetime.datetime.now, required=True)
     format = db.StringField(max_length=255, required=True)
+#    type = db.StringField(max_length=255)#HR-HDTV include hr_mkv,mp4_mkv,ori_mkv,ori_mp4 4 types
     index = db.DecimalField()
+    show_id = db.StringField(max_length=10, required=True)
     season = db.DecimalField()
     episode = db.DecimalField()
     ed2k_link = db.StringField()
 
     meta = {
         'allow_inheritance': True,
+        'indexes':['format', '-season', '-episode'],
         'ordering': ['-index']
     }
 
