@@ -40,7 +40,7 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
     urldoc = json.loads(html)
     results = urldoc["data"]
     
-    if results == 'false':
+    if results == False:
         print 'Show name error, cannot find it in YYets'
         return
     show = {}
@@ -51,10 +51,9 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
     if len(show) == 0:
         print 'Cannot find TV show according to the name!'
         return
-    else:
-        if _debug:
-            print 'find the resource ' + show['itemid']\
-                    + ' ' + show['title']
+    #else:
+        #if _debug:
+           # print 'find the resource ' + show['itemid'] + ' ' + show['title']
     #save show info
     show_item = Show.objects(show_id=show['itemid']).first()
     if show_item == None:
@@ -79,10 +78,12 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
             episode.episode = item[3]
             episode.ed2k_link = item[4]
             episode.save()
-            if max_s < episode.season:
-                max_s = episode.season            
-            if max_e < episode.episode:
-                max_e = episode.episode
+            if episode.season >= max_s:
+                if episode.episode > max_e:
+                    max_s = episode.season
+                    max_e = episode.episode
+
+                
         #update latest s&e in show info
         show_item.latest_season = max_s
         show_item.latest_episode = max_e

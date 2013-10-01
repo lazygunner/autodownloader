@@ -4,6 +4,7 @@ from flask.views import MethodView
 from models import * 
 import re
 from update import find_show
+from urllib import quote
 
 shows = Blueprint('posts', __name__, template_folder='templates')
 
@@ -13,12 +14,12 @@ class ListView(MethodView):
         shows = Show.objects()
         return render_template('list.html', shows=shows)
     def post(self):
-	show_name = request.form['show_name']
-	print show_name
-	if show_name != '':	
-	    find_show(show_name)
+    	show_name = urlquote(request.form['show_name'])
+    	print show_name
+        if show_name != '':
+            find_show(show_name)
+            return redirect('/')
         return redirect('/')
-	
 
 shows.add_url_rule('/', view_func=ListView.as_view('list'))
 #posts.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'))
