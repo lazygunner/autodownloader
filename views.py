@@ -14,7 +14,7 @@ class ListView(MethodView):
         shows = Show.objects()
         return render_template('list.html', shows=shows)
     def post(self):
-    	show_name = urlquote(request.form['show_name'])
+    	show_name = quote(request.form['show_name'])
     	print show_name
         if show_name != '':
             find_show(show_name)

@@ -78,9 +78,11 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
             episode.episode = item[3]
             episode.ed2k_link = item[4]
             episode.save()
-            if episode.season >= max_s:
+            if episode.season > max_s:
+                max_s = episode.season
+                max_e = episode.episode
+            elif episode.season == max_s:
                 if episode.episode > max_e:
-                    max_s = episode.season
                     max_e = episode.episode
 
                 
@@ -159,8 +161,8 @@ def update_routine():
     found = False
     #match updates in RSS with shows in db
     for show in shows:
-        if _debug:
-            print 'finding update of show: ' + show['show_name']
+#        if _debug:
+#           print 'finding update of show: ' + show['show_name']
         for update in updates:
             #find the update match and time is later then update db
             if show['show_id'] == update['id'] and \
@@ -177,4 +179,4 @@ def update_routine():
 def update_thread():
     while(True):
        update_routine()
-       time.sleep(10)
+       time.sleep(60 * 60)
