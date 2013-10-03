@@ -3,7 +3,7 @@
 {% block content %}
     {% for show in shows %}
         <div>
-        <h2 style="display:inline"><a href="/">{{ show.show_name }}</a></h2>
+        <h2 style="display:inline"><a href="http://www.yyets.com/resource/{{show.show_id}}">{{ show.show_name }}</a></h2>
 	    <h4 style="display:inline;margin-left:10px">Latest:S{{show.latest_season}}E{{show.latest_episode}}</h4>
         </div>
     {% endfor %}
