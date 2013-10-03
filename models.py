@@ -4,12 +4,13 @@ from  autodownloader import db
 
 class Show(db.Document):
     created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
-    updated_at = db.DateTimeField(default=datetime.datetime.now, required=True)
+    updated_at = db.DateTimeField()
     show_name = db.StringField(max_length=255, required=True)
     show_id = db.StringField(max_length=255, required=True)
     show_format = db.StringField(default='HR-HDTV', required=True)
     latest_season = db.IntField(default=0)
     latest_episode = db.IntField(default=0)
+    poster = db.StringField(max_length=255)
 #    episodes = db.ListField(db.EmbeddedDocumentField('Episode'))
 
     meta = {

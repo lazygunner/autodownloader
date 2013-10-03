@@ -5,6 +5,8 @@ import re
 import urllib2
 import json
 import time
+from datetime import datetime
+from urllib2 import quote
 
 _debug = True
 
@@ -58,11 +60,13 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
     #save show info
     show_item = Show.objects(show_id=show['itemid']).first()
     if show_item == None:
-        if _debug:
+	if _debug:
             print 'New resouece!'
-        show_item = Show()
-        show_item.show_id = show['itemid']
-        show_item.show_name = show['title']
+	show_item = Show()
+	show_item.show_id = show['itemid']
+	show_item.show_name = show['title']
+	show_item.created_at = datetime.fromtimestamp(int(show['pubtime']))
+	show_item.updated_at = datetime.fromtimestamp(int(show['uptime']))
         #find episodes according to show_id
         episodes = find_episodes(show_item.show_id)
         if _debug:
@@ -119,8 +123,8 @@ def update_show(update_id, date):
             new_episode.episode = int(episode[3])
             new_episode.ed2k_link = episode[4]
             if _debug:
-                print 'insert new episode:S' + new_episode.season + \
-                    'E' + new_episode.episode
+                print 'insert new episode:S' +str(new_episode.season) + \
+                    'E' + str(new_episode.episode)
             new_episode.save()
         #update exist latest episode
         elif(int(episode[2]) == show['latest_season'] and \
@@ -151,6 +155,40 @@ def update_show(update_id, date):
     if _debug:
         print 'update finished.'
 
+def check_update_time(title, updated_time):
+    title = quote(title.encode('utf-8'))
+    #get the show info through YYets query API
+    try:
+        response = urllib2.urlopen(query_url+title)
+    except:
+        print 'Net work error!Please check your network and the city name!'
+        return
+    html = response.read()
+
+    urldoc = json.loads(html)
+    results = urldoc["data"]
+    
+    if results == False:
+        print 'Show name error, cannot find it in YYets'
+        return
+    show = {}
+    for res in results:
+        if(res['type'] == 'resource' and res['channel'] == 'tv'):
+            show = res
+            break
+    if len(show) == 0:
+        print 'Cannot find TV show according to the name!'
+        return
+    #else:
+        #if _debug:
+           # print 'find the resource ' + show['itemid'] + ' ' + show['title']
+    new_updated_time = datetime.fromtimestamp(int(show['uptime']))
+    if(updated_time < new_updated_time):
+	return new_updated_time
+    else:
+	return None
+
+
 def update_routine():
     update_format = 'HR-HDTV'
     #get updates from RSS
@@ -165,14 +203,15 @@ def update_routine():
 #        if _debug:
 #           print 'finding update of show: ' + show['show_name']
         for update in updates:
-            #find the update match and time is later then update db
-            if show['show_id'] == update['id'] and \
-            show['updated_at'] < update['date']:
-                update_show(update['id'], update['date'])
-                if _debug:
-                    print 'found update'
-                found = True
-                break
+            #find the update match then check the update time
+            if show['show_id'] == update['id']:
+                new_update_time = check_update_time(show['show_name'], show['updated_at'])
+            	if new_update_time!= None:
+	                update_show(update['id'], new_update_time)
+	                if _debug:
+	                    print 'found update'
+	                found = True
+	                break
         if _debug:
             if found == False: 
                 print 'no update'
