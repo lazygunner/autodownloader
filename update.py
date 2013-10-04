@@ -200,20 +200,18 @@ def update_routine():
     found = False
     #match updates in RSS with shows in db
     for show in shows:
-#        if _debug:
-#           print 'finding update of show: ' + show['show_name']
-        for update in updates:
-            #find the update match then check the update time
-            if show['show_id'] == update['id']:
-                new_update_time = check_update_time(show['show_name'], show['updated_at'])
-            	if new_update_time!= None:
-	                update_show(update['id'], new_update_time)
-	                if _debug:
-	                    print 'found update'
-	                found = True
-	                break
         if _debug:
-            if found == False: 
+           print 'finding update of show: ' + show['show_id']
+       # for update in updates:
+            #find the update match then check the update time
+       #     if show['show_id'] == update['id']:
+        new_update_time = check_update_time(show['show_name'], show['updated_at'])
+        if new_update_time!= None:
+	    update_show(update['id'], new_update_time)
+	    if _debug:
+	        print 'found update'
+	else:
+            if _debug:
                 print 'no update'
 
 def update_thread():
