@@ -209,7 +209,7 @@ def update_routine():
        #     if show['show_id'] == update['id']:
         new_update_time = check_update_time(show['show_name'], show['updated_at'])
         if new_update_time!= None:
-	    update_show(update['id'], new_update_time)
+	    update_show(show['show_id'], new_update_time)
 	    if _debug:
 	        print 'found update'
 	else:
