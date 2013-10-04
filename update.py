@@ -7,6 +7,7 @@ import json
 import time
 from datetime import datetime
 from urllib2 import quote
+import threading
 
 _debug = True
 
@@ -64,7 +65,8 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
             print 'New resouece!'
 	show_item = Show()
 	show_item.show_id = show['itemid']
-	show_item.show_name = show['title']
+	p = re.compile(r'.*?\)')
+	show_item.show_name = p.findall(show['title'])[0]
 	show_item.created_at = datetime.fromtimestamp(int(show['pubtime']))
 	show_item.updated_at = datetime.fromtimestamp(int(show['uptime']))
         #find episodes according to show_id
@@ -216,5 +218,10 @@ def update_routine():
 
 def update_thread():
     while(True):
+       print 'update...'
        update_routine()
        time.sleep(60 * 60)
+def thread():
+    t = threading.Thread(target = update_thread, args = (), name = 'update_thread')
+    t.start()
+ 
