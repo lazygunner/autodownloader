@@ -73,25 +73,22 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
         episodes = find_episodes(show_item.show_id)
         if _debug:
             print 'find ' + str(len(episodes)) + ' episodes.' 
-        max_s = 0
-        max_e = 0
+        max = 0
         #save episodes to db
         for item in episodes:
             episode = Episode()
             episode.show_id = show_item.show_id
-            episode.index = item[0]
+            episode.index = int(item[2]) * 100  + int(item[3]) #s03e05 = 305
             episode.format = item[1]
             episode.season = item[2]
             episode.episode = item[3]
             episode.ed2k_link = item[4]
             episode.save()
-            if episode.season > max_s:
+            
+            if episode.index > max:
+                max = episode.index
                 max_s = episode.season
                 max_e = episode.episode
-            elif episode.season == max_s:
-                if episode.episode > max_e:
-                    max_e = episode.episode
-
                 
         #update latest s&e in show info
         show_item.latest_season = max_s
@@ -107,7 +104,7 @@ def update_show(update_id, date):
         print 'update :' + update_id + ' at ' + date.strftime("%A, %d. %B %Y %I:%M%p")
     episodes = find_episodes(update_id)
     #sort by the index, make the latest update on the top of the list
-    episodes_sorted = sorted(episodes, key = lambda x:int(x[0]), reverse=True)
+    episodes_sorted = sorted(episodes, key = lambda x:int(x[2]) * 100 + int(x[3]), reverse=True)
     show = Show.objects(show_id=update_id)[0]
     if _debug:
         print 'latest data in db: season:%d episode:%d'\
@@ -119,7 +116,7 @@ def update_show(update_id, date):
             int(episode[3]) > show['latest_episode']):
             new_episode = Episode()
             new_episode.show_id = update_id
-            new_episode.index = episode[0]
+            new_episode.index = int(episode[2]) * 100 + int(episode[3])
             new_episode.format = episode[1]
             new_episode.season = int(episode[2])
             new_episode.episode = int(episode[3])
@@ -140,16 +137,16 @@ def update_show(update_id, date):
                 print 'updating exist episode S' + episode[2] + \
                     'E' + episode[3] + ' format: ' + \
                     episode[1]
-                if e:
-                    print e[0]['ed2k_link']\
-                         + '\n --> \n' + \
-                         episode[4]
+#                if e:
+#                    print e[0]['ed2k_link']\
+#                         + '\n --> \n' + \
+#                         episode[4]
             if e:
                 e[0].update(set__ed2k_link=episode[4])
             else:
                 new_episode = Episode()
                 new_episode.show_id = update_id
-                new_episode.index = episode[0]
+                new_episode.index = int(episode[2]) * 100 + int(episode[3])
                 new_episode.format = episode[1]
                 new_episode.season = int(episode[2])
                 new_episode.episode = int(episode[3])
