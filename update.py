@@ -40,8 +40,11 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
         print 'Net work error!Please check your network and the city name!'
         return
     html = response.read()
-
-    urldoc = json.loads(html)
+    try:
+        urldoc = json.loads(html)
+    except:
+        print 'json error!'
+        return
     results = urldoc["data"]
     
     if results == False:
