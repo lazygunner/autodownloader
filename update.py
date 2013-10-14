@@ -177,15 +177,18 @@ def check_update_time(title, updated_time):
         response = urllib2.urlopen(query_url+title)
     except:
         print 'Net work error!Please check your network and the city name!'
-        return
+        return None
     html = response.read()
-
-    urldoc = json.loads(html)
+    try:
+        urldoc = json.loads(html)
+    except:
+        print 'json of query update error'
+        return None
     results = urldoc["data"]
     
     if results == False:
         print 'Show name error, cannot find it in YYets'
-        return
+        return None
     show = {}
     for res in results:
         if(res['type'] == 'resource' and res['channel'] == 'tv'):
@@ -193,7 +196,7 @@ def check_update_time(title, updated_time):
             break
     if len(show) == 0:
         print 'Cannot find TV show according to the name!'
-        return
+        return None
     #else:
         #if _debug:
            # print 'find the resource ' + show['itemid'] + ' ' + show['title']
