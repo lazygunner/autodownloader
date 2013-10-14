@@ -35,7 +35,27 @@ class Episode(db.Document):
         'ordering': ['-index']
     }
 
+ROLE_USER = 0
+ROLE_ADMIN = 1
+class User(db.Document):
+    user_id = db.StringField(max_length=255, required=True, unique=True)
+    nick_name = db.StringField(max_length=20, required=True, unique=True)
+    email = db.StringField(max_length=120, required=True, unique=True)
+    role = db.IntField(default=ROLE_USER)
+    following = db.ListField(db.EmbeddedDocumentField('Following'))
+    
+    def is_authenticated(self):
+        return True
+    def is_active(slef):
+        return True
+    def is_anonymous(self):
+        return False
+    def get_id(self):
+        return unicode(self.user_id)
 
-
-
+class Following(db.EmbeddedDocument):
+    show_id = db.StringField(max_length=255, required=True)
+    show_format = db.StringField(default='HR-HDTV', required=True)
+    latest_season = db.IntField(default=0)
+    latest_episode = db.IntField(default=0)
 
