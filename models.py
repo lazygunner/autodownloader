@@ -1,6 +1,9 @@
 import datetime
 from flask import url_for
-from  autodownloader import db
+from autodownloader import db
+from flask.ext.security import Security, MongoEngineUserDatastore, \
+    UserMixin, RoleMixin, login_required 
+from flask.ext.login import make_secure_token
 
 class Show(db.Document):
     created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
@@ -35,23 +38,46 @@ class Episode(db.Document):
         'ordering': ['-index']
     }
 
-ROLE_USER = 0
-ROLE_ADMIN = 1
+class Role(db.Document, RoleMixin):
+    name = db.StringField(max_length=80, unique=True)
+    description = db.StringField(max_length=255)
+
 class User(db.Document):
     user_id = db.StringField(max_length=255, required=True, unique=True)
-    nick_name = db.StringField(max_length=20, required=True, unique=True)
+    password = db.StringField(verbose_name="Password", max_length=255, required=True)
+#    nick_name = db.StringField(max_length=20, required=True, unique=True)
     email = db.StringField(max_length=120, required=True, unique=True)
-    role = db.IntField(default=ROLE_USER)
+    active = db.BooleanField(default=True)
+    confirmed_at = db.DateTimeField()
+    roles = db.ListField(db.ReferenceField(Role), default=[])
+    current_login_at = db.DateTimeField()
+    current_login_ip = db.StringField()
+    last_login_at = db.DateTimeField()
+    last_login_ip = db.StringField()
+    login_count = db.IntField()
     following = db.ListField(db.EmbeddedDocumentField('Following'))
     
-    def is_authenticated(self):
-        return True
-    def is_active(slef):
-        return True
     def is_anonymous(self):
         return False
+    def is_authenticated(self):
+        return True
+    def is_active(self):
+        return self.active
     def get_id(self):
         return unicode(self.user_id)
+    def get_auth_token(self):
+        return make_secure_token(self.user_id, self.password)
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+#    def __init__(self, user_id, password):
+#        self.user_id = user_id
+#        self.set_password(password)
+#        self.save()
+
+
 
 class Following(db.EmbeddedDocument):
     show_id = db.StringField(max_length=255, required=True)
