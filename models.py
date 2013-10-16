@@ -65,18 +65,13 @@ class User(db.Document):
     def is_active(self):
         return self.active
     def get_id(self):
-        return unicode(self.email)
+        return unicode(self.id)
     def get_auth_token(self):
         return make_secure_token(self.user_id, self.password)
     def set_password(self, password):
         self.password = generate_password_hash(password)
     def check_password(self, password):
         return check_password_hash(self.password, password)
-    def post_save():
-        print email
-        print this.email
-        this.user_id = this.email
-        print user_id
 
 
 class Following(db.EmbeddedDocument):

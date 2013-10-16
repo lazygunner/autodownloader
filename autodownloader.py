@@ -3,7 +3,6 @@
 from flask import Flask
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.login import LoginManager, login_required
-from flask.ext.openid import OpenID
 from flask.ext.security import Security, MongoEngineUserDatastore, utils
 import datetime
 
