@@ -33,13 +33,12 @@ security = Security(app, user_datastore)
 
 
 #@app.before_first_request
-#def create_user():
-#    user_datastore.create_user(user_id='gunner', email='a@b.com', password=utils.encrypt_password('password'),confirmed_at=datetime.datetime.now())
+def create_user():
+    user_datastore.create_user(email='abcd', password=utils.encrypt_password('password'), confirmed_at=datetime.datetime.now(), nick_name='aa')
 
 
 from update import thread
 #    thread()
-
 
 
 app.debug=True

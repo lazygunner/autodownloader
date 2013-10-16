@@ -4,6 +4,7 @@ from autodownloader import db
 from flask.ext.security import Security, MongoEngineUserDatastore, \
     UserMixin, RoleMixin, login_required 
 from flask.ext.login import make_secure_token
+from mongoengine import signals
 
 class Show(db.Document):
     created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
@@ -43,10 +44,10 @@ class Role(db.Document, RoleMixin):
     description = db.StringField(max_length=255)
 
 class User(db.Document):
-    user_id = db.StringField(max_length=255, required=True, unique=True)
+#    user_id = db.StringField(max_length=255)
     password = db.StringField(verbose_name="Password", max_length=255, required=True)
-#    nick_name = db.StringField(max_length=20, required=True, unique=True)
-    email = db.StringField(max_length=120, required=True, unique=True)
+    nick_name = db.StringField(max_length=20, unique=True)
+    email = db.StringField(max_length=255, required=True, unique=True)
     active = db.BooleanField(default=True)
     confirmed_at = db.DateTimeField()
     roles = db.ListField(db.ReferenceField(Role), default=[])
@@ -64,19 +65,18 @@ class User(db.Document):
     def is_active(self):
         return self.active
     def get_id(self):
-        return unicode(self.user_id)
+        return unicode(self.email)
     def get_auth_token(self):
         return make_secure_token(self.user_id, self.password)
     def set_password(self, password):
         self.password = generate_password_hash(password)
     def check_password(self, password):
         return check_password_hash(self.password, password)
-
-#    def __init__(self, user_id, password):
-#        self.user_id = user_id
-#        self.set_password(password)
-#        self.save()
-
+    def post_save():
+        print email
+        print this.email
+        this.user_id = this.email
+        print user_id
 
 
 class Following(db.EmbeddedDocument):
