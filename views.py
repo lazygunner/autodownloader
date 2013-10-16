@@ -9,8 +9,8 @@ from models import *
 import re
 from update import find_show
 from urllib import quote
-#from flask.ext.login import login_user, logout_user, current_user, login_required
-from autodownloader import app, lm, db
+from flask.ext.login import current_user
+from autodownloader import app, db
 
 #@app.before_request
 #def before_request():
@@ -18,15 +18,15 @@ from autodownloader import app, lm, db
 
 shows = Blueprint('posts', __name__, template_folder='templates')
 
-#@app.route('/')
+
 class ListView(MethodView):
     
     @login_required
     def get(self):
-        print 'aaaa'
         shows = Show.objects()
         user = 'Sign in'
-
+        if not current_user.is_anonymous():
+            user = current_user.email
         return render_template('list.html', shows=shows, user=user)
 
 	def post(self):
@@ -38,12 +38,12 @@ class ListView(MethodView):
 			return redirect('/')
 		return redirect('/')
 
-@lm.user_loader
-def load_user(load_user_id):
-    print load_user_id
-    user = User.objects.get(user_id = load_user_id)
-    print user.is_anonymous()
-    return User.objects.get(user_id = load_user_id)
+#@lm.user_loader
+#def load_user(load_user_id):
+#    print load_user_id
+#    user = User.objects.get(user_id = load_user_id)
+#    print user.is_anonymous()
+#    return User.objects.get(user_id = load_user_id)
 
 class LoginForm(Form):
     user_id = TextField('Username', [validators.Length(min=4, max=25)])
