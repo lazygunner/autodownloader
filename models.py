@@ -20,7 +20,7 @@ class Show(db.Document):
     meta = {
         'allow_inheritance': True,
         'indexes': ['-show_id'],
-        'ordering': ['-latest_season','-latest_episode']
+        'ordering': ['-updated_at']
     }
 
 class Episode(db.Document):
@@ -46,7 +46,7 @@ class Role(db.Document, RoleMixin):
 class User(db.Document):
 #    user_id = db.StringField(max_length=255)
     password = db.StringField(verbose_name="Password", max_length=255, required=True)
-#    nick_name = db.StringField(max_length=20, unique=True)
+    nick_name = db.StringField(max_length=20)
     email = db.StringField(max_length=255, required=True, unique=True)
     active = db.BooleanField(default=True)
     confirmed_at = db.DateTimeField()
@@ -56,7 +56,6 @@ class User(db.Document):
     last_login_at = db.DateTimeField()
     last_login_ip = db.StringField()
     login_count = db.IntField()
-    following = db.ListField(db.EmbeddedDocumentField('Following'))
     
     def is_anonymous(self):
         return False
@@ -68,13 +67,14 @@ class User(db.Document):
         return unicode(self.id)
     def get_auth_token(self):
         return make_secure_token(self.user_id, self.password)
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
+#    def set_password(self, password):
+#        self.password = generate_password_hash(password)
+#    def check_password(self, password):
+#        return check_password_hash(self.password, password)
 
 
-class Following(db.EmbeddedDocument):
+class Following(db.Document):
+    user_id = db.ObjectIdField(required=True)
     show_id = db.StringField(max_length=255, required=True)
     show_format = db.StringField(default='HR-HDTV', required=True)
     latest_season = db.IntField(default=0)

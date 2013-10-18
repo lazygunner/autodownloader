@@ -5,9 +5,10 @@
         <div>
         <h2><a href="http://www.yyets.com/resource/{{show.show_id}}">{{ show.show_name }}</a></h2>
 	    <h4 style="display:inline;margin-left:200px">Latest:S{{show.latest_season}}E{{show.latest_episode}}      {{show.updated_at}}</h4>
-        <form action="/follow/{{show.show_id}}/" method="post" class    ="navbar-form navbar-left" style="display:inline;float:right!important">
-             <input type="submit" class="btn btn-success" style="float:right;display:inline;margin-left:5px" value="Follow">
+         <form action="/unfollow/{{show.show_id}}/" method="post" class    ="navbar-form navbar-left" style="display:inline;float:right!important">
+             <input type="submit" class="btn btn-success" style="float:right;display:inline;margin-left:5px" value="Unfollow">
         </form>
+
         </div>
     {% endfor %}
 {% endblock %}

@@ -16,14 +16,15 @@ app.config["SECRET_KEY"] = "kalashinikov"
 app.config['SECURITY_REGISTERABLE'] = True
 app.config['SECURITY_RECOVERABLE'] = True
 app.config['SECURITY_TRACKABLE'] = True
-#app.config['SECURITY_PASSWORD_HASH'] = 'bcrypt'
-#app.config['SECURITY_PASSWORD_SALT'] = '4f6d0251-7927-45e5-a211-8b8411deca22'
+app.config['SECURITY_PASSWORD_HASH'] = 'sha512_crypt'
+app.config['SECURITY_PASSWORD_SALT'] = 'gunner'
 # After 'Create app'
-app.config['MAIL_SERVER'] = 'smtp.126.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = 'gymgunner@126.com'
-app.config['MAIL_PASSWORD'] = '17097448m4'
+app.config['MAIL_USERNAME'] = 'xdream420'
+app.config['MAIL_PASSWORD'] = '17097448ak'
+app.config['MAIL_DEBUG'] = False
 mail = Mail(app)
 db = MongoEngine(app)
 

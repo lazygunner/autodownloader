@@ -21,7 +21,6 @@ shows = Blueprint('posts', __name__, template_folder='templates')
 
 class ListView(MethodView):
     
-    @login_required
     def get(self):
         shows = Show.objects()
         user = 'Sign in'
@@ -38,12 +37,45 @@ class ListView(MethodView):
 			return redirect('/')
 		return redirect('/')
 
-#@lm.user_loader
-#def load_user(load_user_id):
-#    print load_user_id
-#    user = User.objects.get(user_id = load_user_id)
-#    print user.is_anonymous()
-#    return User.objects.get(user_id = load_user_id)
+class IndexView(MethodView):
+    
+    @login_required
+    def get(self):
+        shows = []
+        followings = Following.objects(user_id = current_user.id)
+
+        for f in followings:
+            show = Show.objects(show_id = f.show_id)[0]
+            shows.append(show)
+        if not current_user.is_anonymous():
+            user = current_user.email
+        return render_template('index.html', shows=shows, user=user)
+
+	def post(self):
+		ori_name = request.form['show_name'].encode('utf-8')
+		url_encode = quote(ori_name)
+		print url_encode
+		if url_encode != '':
+			find_show(url_encode)
+			return redirect('/')
+		return redirect('/')
+
+@app.route('/follow/<follow_show_id>/', methods=['POST'])
+@login_required
+def follow(follow_show_id):
+    following = Following()
+    following.show_id = follow_show_id
+    following.user_id = current_user.id
+    #following.show_format
+    following.save()
+    return redirect('/')
+
+@app.route('/unfollow/<follow_show_id>/', methods=['POST'])
+@login_required
+def unfollow(follow_show_id):
+    following = Following.objects(show_id = follow_show_id, user_id = current_user.id)
+    following.delete()
+    return redirect('/index')
 
 class LoginForm(Form):
     user_id = TextField('Username', [validators.Length(min=4, max=25)])
@@ -98,5 +130,6 @@ class LoginView(MethodView):
         
         
 shows.add_url_rule('/', view_func=ListView.as_view('list'))
+shows.add_url_rule('/index', view_func=IndexView.as_view('index'))
 #shows.add_url_rule('/login', view_func=LoginView.as_view('login'))
 #posts.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'))
