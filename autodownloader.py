@@ -46,7 +46,7 @@ def create_user():
 
 
 from update import thread
-#    thread()
+    thread()
 
 
 app.debug=True
