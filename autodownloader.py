@@ -30,7 +30,9 @@ db = MongoEngine(app)
 
 def register_blueprints(app):
     from views import shows
+    from details import details
     app.register_blueprint(shows)
+    app.register_blueprint(details)
 
 
 register_blueprints(app)
@@ -46,7 +48,7 @@ def create_user():
 
 
 from update import thread
-thread()
+#thread()
 
 
 app.debug=True

@@ -28,14 +28,14 @@ class ListView(MethodView):
             user = current_user.email
         return render_template('list.html', shows=shows, user=user)
 
-	def post(self):
-		ori_name = request.form['show_name'].encode('utf-8')
-		url_encode = quote(ori_name)
-		print url_encode
-		if url_encode != '':
-			find_show(url_encode)
-			return redirect('/')
-		return redirect('/')
+    def post(self):
+        ori_name = request.form['show_name'].encode('utf-8')
+        url_encode = quote(ori_name)
+        print url_encode
+        if url_encode != '':
+            find_show(url_encode)
+            return redirect('/')
+        return redirect('/')
 
 class IndexView(MethodView):
     

@@ -1,51 +1,21 @@
-{% import "_forms.html" as forms %}
 {% extends "base.html" %}
 
-{% block page_header %}
-  <div class="page-header">
-      <h1>{{ post.title }}</h1>
-        </div>
-        {% endblock %}
+{% block content %}
+        <div>
+        <h2><a href="http://www.yyets.com/resource/{{show.show_id}}">{{ show.show_name }}</a></h2>
+	    <h4 style="display:inline;margin-left:200px">Latest:S{{show.latest_season}}E{{show.latest_episode}}      {{show.updated_at}}</h4>
+         <form action="/unfollow/{{show.show_id}}/" method="post" class    ="navbar-form navbar-left" style="display:inline;float:right!important">
+             <input type="submit" class="btn btn-success" style="float:right;display:inline;margin-left:5px" value="Unfollow">
+        </form>
+        {% for episodes in episodes_array %}
+            <div>{{ episodes[0].season }}<br>
+            {% for episode in episodes%}
+                <p style="display:inline">
+                {{ episode.episode }}
+                </p>
+            {% endfor %}
+            </div>
+        {% endfor %}
 
-        {% block content %}
-          <div class="md_content" style="padding-top:0px">
-          {{ post.body }}
-          </div>
-            <p>{{ post.created_at.strftime('%H:%M %Y-%m-%d') }}</p>
-              <hr>
-                <h2>Comments</h2>
-                  {% if post.comments %}
-                      {% for comment in post.comments %}
-                             <p>{{ comment.body }}</p>
-                                    <p><strong>{{ comment.author }}</strong> <small>on {{ comment.created_at.strftime('%H:%M %Y-%m-%d') }}</small></p>
-                                          {{ comment.text }}
-                                              {% endfor %}
-                                                {% endif %}
-        <hr>
-        <h2>Add a comment</h2>
-        <form action="." method="post">
-          {{ forms.render(form) }}
-            <div class="actions" style="padding-top:10px" >
-                <input type="submit" class="btn btn-primary" value="comment">
-                  </div>
-                  </form>
-                         
-        <script>
-        window.onload = function(){
-		        previewer = document.getElementsByClassName('md_content')[0];
-                var codeBlocks = document.getElementsByTagName('code');
-		
-		        for (var i = 0; i < codeBlocks.length; i++)
-		          codeBlocks[i].className += ' prettyprint linenums';
-		        var body = document.getElementsByTagName('body');
-		        prettyPrint(null, previewer);	
-		        
-		        var li = document.getElementsByTagName('li');
-		        for (var i = 0; i < li.length; i++)
-		          li[i].className = 'list-style-type: decimal';
-	
-	           
-       }
-       </script>
-                  
-                                                {% endblock %}
+        </div>
+{% endblock %}
