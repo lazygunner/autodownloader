@@ -12,9 +12,9 @@
         {% for episodes in episodes_array %}
             <div>{{ episodes[0].season }}<br>
             {% for episode in episodes%}
-                <p style="display:inline">
+                <a href="{{episode.ed2k_link}}" style="display:inline">
                 {{ episode.episode }}
-                </p>
+                </a>
             {% endfor %}
             </div>
         {% endfor %}
