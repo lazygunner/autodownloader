@@ -31,8 +31,10 @@ db = MongoEngine(app)
 def register_blueprints(app):
     from views import shows
     from details import details
+    from download import download
     app.register_blueprint(shows)
     app.register_blueprint(details)
+    app.register_blueprint(download, url_prefix='/download')
 
 
 register_blueprints(app)
@@ -40,11 +42,6 @@ register_blueprints(app)
 from models import User, Role
 user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
-
-
-#@app.before_first_request
-def create_user():
-    user_datastore.create_user(email='abcd', password=utils.encrypt_password('password'), confirmed_at=datetime.datetime.now(), nick_name='aa')
 
 
 from update import thread
