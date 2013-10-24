@@ -1,6 +1,6 @@
 from models import *
 from flask.views import MethodView
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, redirect
 from flask.ext.login import current_user
 
 details = Blueprint('details', __name__, template_folder='templates')
@@ -30,7 +30,16 @@ class DetailView(MethodView):
             else:
                 break
         return render_template('detail.html', show=show, episodes_array = episodes_array, follow=follow, latest_index=latest_index)
-        
+    
+    def post(self, show_id):
+        post_data = request.form
+        print show_id
+        follow = Following.objects.get(show_id=show_id)
+        follow.update(set__latest_season = post_data['latest_season'])
+        follow.update(set__latest_episode = post_data['latest_episode'])
+        follow.save()
+        return redirect(request.path)
+
 
 
 

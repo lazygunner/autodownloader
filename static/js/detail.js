@@ -1,5 +1,4 @@
 
-
 $(document).ready(function() {
     window.g_index = 0;
     
@@ -17,6 +16,20 @@ $(document).ready(function() {
         $(this).css("color","red");
         window.g_index = $(this).attr("index");
         return false;
+    });
+    
+    $("#update_follow").click(function(){
+        var index = window.g_index;
+        e = index % 100;
+        s = (index - e) / 100;
+        data = {
+            "latest_season" : s,
+            "latest_episode" : e
+        }
+
+        $.post(window.location.pathname,data);
+
+
     });
 
 });
