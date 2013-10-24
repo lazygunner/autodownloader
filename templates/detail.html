@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+         <script type="text/javascript"
+         src="/static/js/detail.js">
+         </script>
         <div>
-        <h2><a href="http://www.yyets.com/resource/{{show.show_id}}">{{ show.show_name }}</a></h2>
+        <h2><a latest_index="{{latest_index}}" href="http://www.yyets.com/resource/{{show.show_id}}">{{ show.show_name }}</a></h2>
 	    <h4 style="display:inline;margin-left:200px">Latest:S{{show.latest_season}}E{{show.latest_episode}}      {{show.updated_at}}</h4>
          {% if follow != 'anonymous' %}
          <form action="/{{follow}}/{{show.show_id}}/" method="post" class    ="navbar-form navbar-left" style="display:inline;float:right!important">
@@ -10,9 +13,9 @@
         </form>
         {% endif %}
         {% for episodes in episodes_array %}
-            <div>{{ episodes[0].season }}<br>
+            <div class="btn-group" >{{ episodes[0].season }}<br>
             {% for episode in episodes%}
-                <a href="{{episode.ed2k_link}}" style="display:inline">
+                <a class="btn btn-default" index="{{episode.season * 100 + episode.episode}}" href="{{episode.ed2k_link}}" style="display:inline">
                 {{ episode.episode }}
                 </a>
             {% endfor %}

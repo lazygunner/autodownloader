@@ -10,12 +10,15 @@ class DetailView(MethodView):
     def get(self, show_id, format='HR-HDTV'):
         show = Show.objects.get(show_id=show_id)
         follow = 'anonymous'
+        latest_index = 0
         if current_user.is_anonymous():
             follow = 'anonymous'
         else:
-            followings = len(Following.objects(user_id=current_user.id, show_id=show_id))
-            if followings > 0:
+
+            followings = Following.objects(user_id=current_user.id, show_id=show_id)
+            if len(followings) > 0:
                 follow = 'unfollow'
+                latest_index = followings[0].latest_season * 100 +  followings[0].latest_episode
             else:
                 follow = 'follow'
                 
@@ -26,7 +29,7 @@ class DetailView(MethodView):
                 episodes_array.append(episodes)
             else:
                 break
-        return render_template('detail.html', show=show, episodes_array = episodes_array, follow=follow)
+        return render_template('detail.html', show=show, episodes_array = episodes_array, follow=follow, latest_index=latest_index)
         
 
 

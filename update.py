@@ -77,6 +77,8 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
         if _debug:
             print 'find ' + str(len(episodes)) + ' episodes.' 
         max = 0
+        max_s = 0
+        max_e = 0
         #save episodes to db
         for item in episodes:
             episode = Episode()

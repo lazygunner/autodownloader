@@ -45,7 +45,7 @@ security = Security(app, user_datastore)
 
 
 from update import thread
-thread()
+#thread()
 
 
 app.debug=True
