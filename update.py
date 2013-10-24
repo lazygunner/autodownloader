@@ -162,11 +162,12 @@ def update_show(update_id, date):
         #skip the rest episodes get from the update
         else:
             break
+    if(len(episodes_sorted) > 0):
+        show.latest_season = int(episodes_sorted[0][2])
+        show.latest_episode = int(episodes_sorted[0][3])
+        show.updated_at = date
+        show.save()
 
-    show.latest_season = int(episodes_sorted[0][2])
-    show.latest_episode = int(episodes_sorted[0][3])
-    show.updated_at = date
-    show.save()
     if _debug:
         print 'update finished.'
 
