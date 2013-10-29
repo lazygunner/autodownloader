@@ -23,12 +23,10 @@ class DetailView(MethodView):
                 follow = 'follow'
                 
         episodes_array = []
-        for i in range(1,100):
+        for i in range(1, show.latest_season):
             episodes = Episode.objects(show_id = show_id, format=format, season=i).order_by('+index')
             if len(episodes) > 0:
                 episodes_array.append(episodes)
-            else:
-                break
         return render_template('detail.html', show=show, episodes_array = episodes_array, follow=follow, latest_index=latest_index)
     
     def post(self, show_id):
