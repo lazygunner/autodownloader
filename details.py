@@ -32,10 +32,20 @@ class DetailView(MethodView):
     def post(self, show_id):
         post_data = request.form
         print show_id
-        follow = Following.objects.get(show_id=show_id, user_id=current_user.id)
-        follow.update(set__latest_season = post_data['latest_season'])
-        follow.update(set__latest_episode = post_data['latest_episode'])
-        follow.save()
+        follow = Following.objects(show_id=show_id, user_id=current_user.id)    
+        if len(follow) > 0:
+            follow[0].update(set__latest_season = post_data['latest_season'])
+            follow[0].update(set__latest_episode = post_data['latest_episode'])
+            follow[0].save()
+        else:
+            follow = Following()
+            follow.show_id = show_id
+            follow.user_id = current_user.id
+            follow.latest_season = post_data['latest_season']
+            follow.latest_episode = post_data['latest_episode']
+            #following.show_format
+            follow.save()
+
         return redirect(request.path)
 
 
