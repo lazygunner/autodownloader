@@ -23,7 +23,7 @@ class DetailView(MethodView):
                 follow = 'follow'
                 
         episodes_array = []
-        for i in range(1, show.latest_season):
+        for i in range(1, show.latest_season + 1):
             episodes = Episode.objects(show_id = show_id, format=format, season=i).order_by('+index')
             if len(episodes) > 0:
                 episodes_array.append(episodes)
@@ -32,7 +32,7 @@ class DetailView(MethodView):
     def post(self, show_id):
         post_data = request.form
         print show_id
-        follow = Following.objects.get(show_id=show_id)
+        follow = Following.objects.get(show_id=show_id, user_id=current_user.id)
         follow.update(set__latest_season = post_data['latest_season'])
         follow.update(set__latest_episode = post_data['latest_episode'])
         follow.save()
