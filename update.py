@@ -32,24 +32,64 @@ def find_episodes(show_id='11005', format='.*?'):
         print 'finished parsing.'
     return episodes
 
+def add_new_show_thread(show):
+    if _debug:
+        print 'New resouece!'
+    show_item = Show()
+    show_item.show_id = show['itemid']
+    p = re.compile(r'.*?\)')
+    show_item.show_name = p.findall(show['title'])[0]
+    show_item.created_at = datetime.fromtimestamp(int(show['pubtime']))
+    show_item.updated_at = datetime.fromtimestamp(int(show['uptime']))
+    #find episodes according to show_id
+    episodes = find_episodes(show_item.show_id)
+    if _debug:
+        print 'find ' + str(len(episodes)) + ' episodes.' 
+    max = 0
+    max_s = 0
+    max_e = 0
+    #save episodes to db
+    for item in episodes:
+        episode = Episode()
+        episode.show_id = show_item.show_id
+        episode.index = int(item[2]) * 100  + int(item[3]) #s03e05 = 305
+        episode.format = item[1]
+        episode.season = item[2]
+        episode.episode = item[3]
+        episode.ed2k_link = item[4]
+        episode.save()
+        
+        #update the max index
+        if episode.index > max:
+            max = episode.index
+            max_s = episode.season
+            max_e = episode.episode
+              
+    #update latest s&e in show info
+    show_item.latest_season = max_s
+    show_item.latest_episode = max_e
+    show_item.save()
+    
+    return
+    
 def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
     #get the show info through YYets query API
     try:
         response = urllib2.urlopen(query_url+name)
     except:
         print 'Net work error!Please check your network and the city name!'
-        return
+        return 'ne'
     html = response.read()
     try:
         urldoc = json.loads(html)
     except:
         print 'json error!'
-        return
+        return 'ne'
     results = urldoc["data"]
     
     if results == False:
         print 'Show name error, cannot find it in YYets'
-        return
+        return 'no'
     show = {}
     for res in results:
         if(res['type'] == 'resource' and res['channel'] == 'tv'):
@@ -57,51 +97,21 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
             break
     if len(show) == 0:
         print 'Cannot find TV show according to the name!'
-        return
+        return 'no'
     #else:
         #if _debug:
            # print 'find the resource ' + show['itemid'] + ' ' + show['title']
     #save show info
-    show_item = Show.objects(show_id=show['itemid']).first()
+    show_id = show['itemid']
+    show_item = Show.objects(show_id=show_id).first()
     if show_item == None:
-	if _debug:
-            print 'New resouece!'
-	show_item = Show()
-	show_item.show_id = show['itemid']
-	p = re.compile(r'.*?\)')
-	show_item.show_name = p.findall(show['title'])[0]
-	show_item.created_at = datetime.fromtimestamp(int(show['pubtime']))
-	show_item.updated_at = datetime.fromtimestamp(int(show['uptime']))
-        #find episodes according to show_id
-        episodes = find_episodes(show_item.show_id)
-        if _debug:
-            print 'find ' + str(len(episodes)) + ' episodes.' 
-        max = 0
-        max_s = 0
-        max_e = 0
-        #save episodes to db
-        for item in episodes:
-            episode = Episode()
-            episode.show_id = show_item.show_id
-            episode.index = int(item[2]) * 100  + int(item[3]) #s03e05 = 305
-            episode.format = item[1]
-            episode.season = item[2]
-            episode.episode = item[3]
-            episode.ed2k_link = item[4]
-            episode.save()
-            
-            if episode.index > max:
-                max = episode.index
-                max_s = episode.season
-                max_e = episode.episode
-                
-        #update latest s&e in show info
-        show_item.latest_season = max_s
-        show_item.latest_episode = max_e
-        show_item.save()
+        t = threading.Thread(target=add_new_show_thread, args=[show], name="add_new_show_thread")
+        t.start()
+        return 'ad'
     else:
         print show_item.latest_episode
-    return
+        return show_id
+    
 
 #episode:0-index,1-format,2-season,3-episode,4-ed2k_link
 def update_show(update_id, date):
