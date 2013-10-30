@@ -45,8 +45,9 @@ class IndexView(MethodView):
         followings = Following.objects(user_id = current_user.id)
 
         for f in followings:
-            show = Show.objects(show_id = f.show_id)[0]
-            shows.append(show)
+            show_array = Show.objects(show_id = f.show_id)
+            if(len(show_array) > 0):
+                shows.append(show_array[0])
         if not current_user.is_anonymous():
             user = current_user.email
         return render_template('index.html', shows=shows, user=user)
