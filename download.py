@@ -1,6 +1,6 @@
 from models import *
 from flask.ext.login import current_user
-from flask import Blueprint, request
+from flask import Blueprint, request, abort
 import json
 from autodownloader import app
 
