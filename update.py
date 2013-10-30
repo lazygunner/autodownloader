@@ -8,6 +8,7 @@ import time
 from datetime import datetime
 from urllib2 import quote
 import threading
+import threadpool
 
 _debug = True
 
@@ -229,7 +230,8 @@ def update_routine():
         print 'There is no following shows in the db!'
         return
     found = False
-    #match updates in RSS with shows in db
+    #match updates in RSS with shows in dba
+    update_list = []
     for show in shows:
         if _debug:
            print 'finding update of show: ' + show['show_id']
@@ -238,12 +240,19 @@ def update_routine():
        #     if show['show_id'] == update['id']:
         new_update_time = check_update_time(show['show_name'], show['updated_at'])
         if new_update_time!= None:
-	    update_show(show['show_id'], new_update_time)
-	    if _debug:
-	        print 'found update'
-	else:
+	        #update_show(show['show_id'], new_update_time)
+            update_list.append(((),{'update_id':show['show_id'], 'date':new_update_time}))
+            if _debug:
+	            print 'found update'
+        else:
             if _debug:
                 print 'no update'
+    pool = threadpool.ThreadPool(5)
+    requests = threadpool.makeRequests(update_show, update_list)
+    [pool.putRequest(req) for req in requests]
+    pool.wait()
+    if _debug:
+        print 'finished all threads.' 
 
 def update_thread():
     while(True):
