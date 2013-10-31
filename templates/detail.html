@@ -6,16 +6,22 @@
          </script>
         <div>
           <div>
+          <div style="float:left">
             <h2><a latest_index="{{latest_index}}" href="http://www.yyets.com/resource/{{show.show_id}}">{{ show.show_name }}</a></h2>
 	        <h4 style="display:inline;margin-left:200px">Latest:S{{show.latest_season}}E{{show.latest_episode}}      {{show.updated_at}}</h4>
           </div>
          {% if follow != 'anonymous' %}
-         <form action="/{{follow}}/{{show.show_id}}/" method="post" class    ="navbar-form navbar-left" style="display:inline;float:right!important">
+         <div>
+         <form action="/{{follow}}/{{show.show_id}}/" method="post" class    ="navbar-form navbar-left" style="display:inline;float:right!important;margin-top:40px">
              <input type="submit" class="btn btn-success" style="float:right;display:inline;margin-left:5px" value="{{follow}}">
         </form>
+        </div>
         {% endif %}
+        </div>
+        <div style="padding-top:100px">
         {% for episodes in episodes_array %}
-            <div class="btn-group" >{{ episodes[0].season }}<br>
+            <h1>{{ episodes[0].season }}</h1>
+            <div class="btn-group" >
             {% for episode in episodes%}
                 <a class="btn btn-default" index="{{episode.season * 100 + episode.episode}}" href="{{episode.ed2k_link}}" style="display:inline">
                 {{ episode.episode }}
@@ -23,6 +29,7 @@
             {% endfor %}
             </div>
         {% endfor %}
+        </div>
         <div>
         <button style="margin-top:20px"class="btn btn-success" id="update_follow">
         Update!
