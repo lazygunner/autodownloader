@@ -9,18 +9,24 @@ download = Blueprint('download', __name__, template_folder='templates')
 
 @download.route('/', methods=['GET'])
 def get_all_links():
-
+    print 'get_link'
     if not request.json or not 'email' in request.json:
         abort(404)
+    print '1'
     data = request.json
     user_id = User.objects(email=data['email']).first()['id']
     follows = Following.objects(user_id=user_id)
     download_json = []
     
+    count = 5
     for follow in follows:
         new_index = int(follow.latest_season) * 100 + int(follow.latest_episode)
         episodes = Episode.objects(show_id=follow.show_id,format=follow.show_format, index__gt=new_index)
         for episode in episodes:
+            if count == 0:
+                break
+            else:
+                count -= 1
             download_json.append({
             "show_id" : follow.show_id,
             "index" : episode.index,
