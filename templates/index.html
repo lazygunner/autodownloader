@@ -3,11 +3,15 @@
 {% block content %}
     {% for show in shows %}
         <div>
+        <div style="float:left">
         <h2><a href="/details/{{show.show_id}}">{{ show.show_name }}</a></h2>
 	    <h4 style="display:inline;margin-left:200px">Latest:S{{show.latest_season}}E{{show.latest_episode}}      {{show.updated_at}}</h4>
-         <form action="/unfollow/{{show.show_id}}/" method="post" class    ="navbar-form navbar-left" style="display:inline;float:right!important">
+        </div>
+        <div>
+         <form action="/unfollow/{{show.show_id}}/" method="post" class    ="navbar-form navbar-left" style="display:inline;float:right!important;margin-top:40px">
              <input type="submit" class="btn btn-success" style="float:right;display:inline;margin-left:5px" value="Unfollow">
         </form>
+        </div>
 
         </div>
     {% endfor %}
