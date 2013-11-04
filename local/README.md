@@ -1,1 +1,0 @@
-/home/gym/workspace/auto-download-show/README.md
