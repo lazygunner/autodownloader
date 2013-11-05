@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for show in shows %}
+    {% for show in shows.items %}
         <div>
         <h2><a href="{{url_for('details.details', show_id=show.show_id)}}">{{ show.show_name }}</a></h2>
 	    <h4 style="display:inline;margin-left:200px">Latest:S{{show.latest_season}}E{{show.latest_episode}}      {{show.updated_at}}</h4>
@@ -12,4 +12,8 @@
         {% endif %}
         </div>
     {% endfor %}
+    <div style="position: absolute;bottom: 0;padding-left: 20%;">
+    {% from "render_pagination.html" import render_pagination %}
+    {{ render_pagination(shows, 'shows.list') }}
+    </div>
 {% endblock %}
