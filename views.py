@@ -18,15 +18,18 @@ from autodownloader import app, db
 
 shows = Blueprint('posts', __name__, template_folder='templates')
 
+class DefaultView(MethodView):
+    redirect('/1')
 
 class ListView(MethodView):
     
-    def get(self):
-        shows = Show.objects()
+    def get(self, page_id = 1):
+        #shows = Show.objects()
         user = 'Sign in'
         if not current_user.is_anonymous():
             user = current_user.email
-        return render_template('list.html', shows=shows, user=user)
+        paginated_shows = Show.objects.paginate(int(page_id), per_page=5)
+        return render_template('list.html', shows=paginated_shows, user=user)
 
     def post(self):
         ori_name = request.form['show_name'].encode('utf-8')
@@ -129,8 +132,8 @@ class LoginView(MethodView):
             return redirect('/login')
 
         
-        
-shows.add_url_rule('/', view_func=ListView.as_view('list'))
+shows.add_url_rule('/', view_func=ListView.as_view('default'))        
+shows.add_url_rule('/<page_id>', view_func=ListView.as_view('list'))
 shows.add_url_rule('/index', view_func=IndexView.as_view('index'))
 #shows.add_url_rule('/login', view_func=LoginView.as_view('login'))
 #posts.add_url_rule('/<slug>/', view_func=DetailView.as_view('detail'))
