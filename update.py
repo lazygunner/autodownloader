@@ -38,6 +38,7 @@ def add_new_show_thread(show):
         print 'New resouece!'
     show_item = Show()
     show_item.show_id = show['itemid']
+    show_item.poster = show['poster']
     p = re.compile(r'.*?\)')
     show_item.show_name = p.findall(show['title'])[0]
     show_item.created_at = datetime.fromtimestamp(int(show['pubtime']))
