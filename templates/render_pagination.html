@@ -5,8 +5,8 @@
         <a href="/{{pagination.prev_num}}">«</a>
     {% else %}
         <a href="/1">«</a>
-    </li>
     {% endif %}
+    </li>
     {%- for page in pagination.iter_pages() %}
     {% if page %}
         {% if page != pagination.page %}
@@ -27,7 +27,7 @@
         <a href="/{{pagination.next_num}}">»</a>
     {% else %}
         <a href="/{{pagination.page}}">»</a>
-    </li>
     {% endif %}
+    </li>
 
 {% endmacro %}
