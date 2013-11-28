@@ -6,7 +6,7 @@ from autodownloader import app
 
 download = Blueprint('download', __name__, template_folder='templates')
 
-
+#curl -X GET 'tv.xdream.info/download/' -d '{"email":"username"}' -H "Content-Type:application/json" -v
 @download.route('/', methods=['GET'])
 def get_all_links():
     if not request.json or not 'email' in request.json:
