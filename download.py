@@ -11,9 +11,7 @@ download = Blueprint('download', __name__, template_folder='templates')
 @download.route('/', methods=['GET'])
 @http_auth_required
 def get_all_links():
-    if not request.json:
-        abort(404)
-    data = request.json
+    
     user_id = current_user.id
     follows = Following.objects(user_id=user_id)
     download_json = []
@@ -39,9 +37,6 @@ def get_all_links():
 @http_auth_required
 def get_update_links(show_id):
     
-    if not request.json:
-        abort(404)
-    data = request.json
     user_id = current_user.id
     follow = Following.objects.get(show_id=show_id, user_id=user_id)
     new_index = int(follow.latest_season) * 100 + int(follow.latest_episode)
