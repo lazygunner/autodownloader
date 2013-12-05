@@ -14,7 +14,7 @@ def get_all_links():
     if not request.json or not 'email' in request.json:
         abort(404)
     data = request.json
-    user_id = User.objects(email=data['email']).first()['id']
+    user_id = current_user.id
     follows = Following.objects(user_id=user_id)
     download_json = []
     
