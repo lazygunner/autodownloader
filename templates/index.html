@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+<script language="JavaScript" type="text/javascript" src="/static/js/index.js"></script>
 
 {% block content %}
     {% for show in shows %}
@@ -15,4 +16,17 @@
 
         </div>
     {% endfor %}
+        <div>
+            <dl>
+                <dd><input class="form-control" id="add_link" type="text" value="输入链接...">
+                <button class="button" id="btn_add_link">添加链接</button>
+                </dd>
+            </dl>
+
+            <div id="link_list">
+
+            </div>
+
+        </div>
+
 {% endblock %}

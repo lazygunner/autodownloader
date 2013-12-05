@@ -81,6 +81,36 @@ def unfollow(follow_show_id):
     following.delete()
     return redirect('/index')
 
+@app.route('/remove_link/<download_link>', methods=['POST'])
+@login_required
+def remove_link():
+    links = DownloadLink.objects(ed2k_link=download_link)
+    links.delete()
+
+    link_array = []
+    links = DownloadLink.objects()
+    
+    if len(links) > 0:
+        link_array = map(lambda xx:xx['ed2k_link'], links)
+    return json.dumps(link_array)
+
+
+@app.route('/add_link/<down_link>', methods=['POST'])
+@login_required
+def add_link():
+    download_link = DownloadLink()
+    download_link.ed2k_link = down_link
+    download_link.user_id = current_user.id
+    download_link.save()
+
+    link_array = []
+    links = DownloadLink.objects()
+    
+    if len(links) > 0:
+        link_array = map(lambda xx:xx['ed2k_link'], links)
+    return json.dumps(link_array)
+
+
 class LoginForm(Form):
     user_id = TextField('Username', [validators.Length(min=4, max=25)])
     password = PasswordField('Password')

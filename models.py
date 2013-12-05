@@ -79,4 +79,7 @@ class Following(db.Document):
     show_format = db.StringField(default='HR-HDTV', required=True)
     latest_season = db.IntField(default=0)
     latest_episode = db.IntField(default=0)
+class DownloadLinks(db.Document):
+    user_id = db.ObjectIdField(required=True)
+    ed2k_link = db.StringField(required=True, unique=True)
 
