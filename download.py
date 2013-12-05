@@ -3,6 +3,7 @@ from flask.ext.login import current_user
 from flask import Blueprint, request, abort
 import json
 from autodownloader import app
+from flask.ext.security.decorators import http_auth_required
 
 download = Blueprint('download', __name__, template_folder='templates')
 
