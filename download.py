@@ -8,6 +8,7 @@ download = Blueprint('download', __name__, template_folder='templates')
 
 #curl -X GET 'tv.xdream.info/download/' -d '{"email":"username"}' -H "Content-Type:application/json" -v
 @download.route('/', methods=['GET'])
+@http_auth_required
 def get_all_links():
     if not request.json or not 'email' in request.json:
         abort(404)
