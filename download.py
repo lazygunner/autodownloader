@@ -11,7 +11,7 @@ download = Blueprint('download', __name__, template_folder='templates')
 @download.route('/', methods=['GET'])
 @http_auth_required
 def get_all_links():
-    if not request.json or not 'email' in request.json:
+    if not request.json:
         abort(404)
     data = request.json
     user_id = current_user.id
@@ -36,12 +36,13 @@ def get_all_links():
 
 
 @download.route('/<show_id>', methods=['GET'])
+@http_auth_required
 def get_update_links(show_id):
     
-    if not request.json or not 'email' in request.json:
+    if not request.json:
         abort(404)
     data = request.json
-    user_id = User.objects.get(email=data['email'])['id']
+    user_id = current_user.id
     follow = Following.objects.get(show_id=show_id, user_id=user_id)
     new_index = int(follow.latest_season) * 100 + int(follow.latest_episode)
     episodes = Episode.objects(show_id=show_id,format=follow.show_format, index__gt=new_index)
@@ -56,11 +57,12 @@ def get_update_links(show_id):
 
 #RESTful API without auth 
 @download.route('/<show_id>', methods=['POST'])
+@http_auth_required
 def update_links(show_id):
     if not request.json or not 'l_e' in request.json:
         abort(404)
     data = request.json
-    user_id = User.objects.get(email=data['email'])['id']
+    user_id = current_user.id
     follow = Following.objects.get(show_id=show_id, user_id=user_id)
     
     follow.update(set__latest_season = data['l_s'])
