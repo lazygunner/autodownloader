@@ -54,7 +54,8 @@ class IndexView(MethodView):
                 shows.append(show_array[0])
         if not current_user.is_anonymous():
             user = current_user.email
-        return render_template('index.html', shows=shows, user=user)
+        links = DownloadLinks.objects(user_id=current_user.id)
+        return render_template('index.html', shows=shows, user=user, links=links)
 
 	def post(self):
 		ori_name = request.form['show_name'].encode('utf-8')

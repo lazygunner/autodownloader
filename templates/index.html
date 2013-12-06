@@ -27,6 +27,9 @@
 
             <div id="link_list">
                 <ul id="linkList">
+                {% for link in links %}
+                    <li class="downloadLinks">{{link.ed2k_link}}<button class="button" id="btn_remove_link"> </button></li>
+                {% endfor %}
                 </ul>
             </div>
 
