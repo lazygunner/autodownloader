@@ -7,6 +7,7 @@ from flask import Blueprint, request, redirect, render_template, url_for, g
 from flask.views import MethodView
 from models import * 
 import re
+import json
 from update import find_show
 from urllib import quote
 from flask.ext.login import current_user
@@ -81,30 +82,33 @@ def unfollow(follow_show_id):
     following.delete()
     return redirect('/index')
 
-@app.route('/remove_link/<download_link>', methods=['POST'])
+@app.route('/remove_link/', methods=['POST'])
 @login_required
 def remove_link():
-    links = DownloadLink.objects(ed2k_link=download_link)
+    links = DownloadLinks.objects(ed2k_link=request.form['link'])
     links.delete()
 
     link_array = []
-    links = DownloadLink.objects()
+    links = DownloadLinks.objects()
     
     if len(links) > 0:
         link_array = map(lambda xx:xx['ed2k_link'], links)
     return json.dumps(link_array)
 
 
-@app.route('/add_link/<down_link>', methods=['POST'])
+@app.route('/add_link/', methods=['POST'])
 @login_required
 def add_link():
-    download_link = DownloadLink()
-    download_link.ed2k_link = down_link
+    download_link = DownloadLinks()
+    download_link.ed2k_link = request.form['link']
     download_link.user_id = current_user.id
-    download_link.save()
+    try:
+        download_link.save()
+    except:
+        pass
 
     link_array = []
-    links = DownloadLink.objects()
+    links = DownloadLinks.objects()
     
     if len(links) > 0:
         link_array = map(lambda xx:xx['ed2k_link'], links)

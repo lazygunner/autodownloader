@@ -28,8 +28,23 @@ def get_all_links():
             download_json.append({
             "show_id" : follow.show_id,
             "index" : episode.index,
-            "ed2k_link" : episode.ed2k_link
+            "ed2k_link" : episode.ed2k_link,
+            "type" : 'ad'
             })
+
+    if count != 0:
+        download_links = DownloadLinks.objects()
+    for download_link in download_links:
+        if count == 0:
+            break
+        else:
+            count -= 1
+            download_json.append({
+            "ed2k_link" : download_link.ed2k_link,
+            "type" : 'dl'
+            })
+
+
     return json.dumps(download_json)
 
 

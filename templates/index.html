@@ -1,7 +1,9 @@
 {% extends "base.html" %}
-<script language="JavaScript" type="text/javascript" src="/static/js/index.js"></script>
 
 {% block content %}
+
+    <script language="JavaScript" type="text/javascript" src="{{url_for('static',filename='js/index.js')}}"></script>
+
     {% for show in shows %}
         <div>
         <div style="float:left">
@@ -24,7 +26,8 @@
             </dl>
 
             <div id="link_list">
-
+                <ul id="linkList">
+                </ul>
             </div>
 
         </div>
