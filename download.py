@@ -8,7 +8,7 @@ from flask.ext.security.decorators import http_auth_required
 download = Blueprint('download', __name__, template_folder='templates')
 
 #curl -X GET 'tv.xdream.info/download/' -d '{"email":"username"}' -H "Content-Type:application/json" -v
-@download.route('/', methods=['GET'])
+@download.route('/download/', methods=['GET'])
 @http_auth_required
 def get_all_links():
     
@@ -48,7 +48,7 @@ def get_all_links():
     return json.dumps(download_json)
 
 
-@download.route('/<show_id>', methods=['GET'])
+@download.route('/download/<show_id>', methods=['GET'])
 @http_auth_required
 def get_update_links(show_id):
     
@@ -65,8 +65,20 @@ def get_update_links(show_id):
         })
     return json.dumps(download_json)
 
-#RESTful API without auth 
-@download.route('/<show_id>', methods=['POST'])
+@download.route('/completed/', methods=['POST'])
+@http_auth_required
+def post_dl_status():
+    print request.json['link']
+    links = DownloadLinks.objects(ed2k_link=request.json['link'])
+    links.delete()
+    link_array = []
+    links = DownloadLinks.objects()
+                    
+    if len(links) > 0:
+        link_array = map(lambda xx:xx['ed2k_link'], links)
+    return json.dumps(link_array)
+
+@download.route('/download/<show_id>', methods=['POST'])
 @http_auth_required
 def update_links(show_id):
     if not request.json or not 'l_e' in request.json:

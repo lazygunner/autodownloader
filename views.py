@@ -88,7 +88,6 @@ def unfollow(follow_show_id):
 def remove_link():
     links = DownloadLinks.objects(ed2k_link=request.form['link'])
     links.delete()
-
     link_array = []
     links = DownloadLinks.objects()
     

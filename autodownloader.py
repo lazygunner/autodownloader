@@ -34,7 +34,7 @@ def register_blueprints(app):
     from download import download
     app.register_blueprint(shows)
     app.register_blueprint(details)
-    app.register_blueprint(download, url_prefix='/download')
+    app.register_blueprint(download)
 
 
 register_blueprints(app)

@@ -68,7 +68,6 @@ var RemoveLink = function(){
 						alert("Empty Link!");
 						return;
 				}
-					
 				$("#add_link").val('');
 			
 				$.ajax({data:downloadLink, dataType:"text", error: registerError, success: registerSuccess, type: "POST", url:"/remove_link/"});
@@ -86,6 +85,13 @@ $(document).ready(function() {
 
 	$("#btn_add_link").click(Download.buttonPress);
     $("#btn_remove_link").click(RemoveLink.removeButtonPress);
+    $("#add_link").click(function(){
+        if ($(this).attr('in') == 'false')
+        {    
+            $(this).val('');
+            $(this).attr('in', 'true');
+        }
+    });
     
 //    $(".downloadLinks").each(function(){
 //    		$(this).text(decodeURIComponent($(this).text()));
