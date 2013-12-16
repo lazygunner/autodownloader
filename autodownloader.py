@@ -20,6 +20,7 @@ app.config['SECURITY_PASSWORD_HASH'] = 'sha512_crypt'
 app.config['SECURITY_PASSWORD_SALT'] = 'gunner'
 # After 'Create app'
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['DEFAULT_MAIL_SENDER'] = 'xdream420.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USERNAME'] = 'xdream420'
@@ -45,7 +46,7 @@ security = Security(app, user_datastore)
 
 
 from update import thread
-thread()
+#thread()
 
 
 app.debug=True

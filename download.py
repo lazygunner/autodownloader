@@ -1,8 +1,9 @@
 from models import *
 from flask.ext.login import current_user
+from flask_mail import Message
 from flask import Blueprint, request, abort
 import json
-from autodownloader import app
+from autodownloader import app, mail
 from flask.ext.security.decorators import http_auth_required
 
 download = Blueprint('download', __name__, template_folder='templates')
@@ -68,11 +69,17 @@ def get_update_links(show_id):
 @download.route('/completed/', methods=['POST'])
 @http_auth_required
 def post_dl_status():
-    print request.json['link']
-    links = DownloadLinks.objects(ed2k_link=request.json['link'])
+    user_id = current_user.id
+    link = request.json['link']
+    links = DownloadLinks.objects.get(user_id=user_id, ed2k_link=link)
     links.delete()
+
+    print current_user.email
+    msg = Message("%s has been downloaded!" % link, recipients=current_user.email)
+    mail.send(msg)
+    
     link_array = []
-    links = DownloadLinks.objects()
+    links = DownloadLinks.objects(user_id=user_id)
                     
     if len(links) > 0:
         link_array = map(lambda xx:xx['ed2k_link'], links)
@@ -91,6 +98,10 @@ def update_links(show_id):
     follow.update(set__latest_episode = data['l_e'])
 
     follow.save()
+
+    msg = Message("%s has been downloaded!" % link, recipients=current_user.email)
+    mail.send(msg)
+
     return json.dumps({'status': show_id})
 
     
