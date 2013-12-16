@@ -47,13 +47,7 @@ class IndexView(MethodView):
     def get(self, page_id=1):
         #shows = []
         followings = map(lambda f: f.show_id, Following.objects(user_id = current_user.id))
-        print followings
-        #for f in followings:
-        #    show_array = Show.objects(show_id = f.show_id)
-        #    if(len(show_array) > 0):
-        #        shows.append(show_array[0])
         shows = Show.objects(show_id__in = followings).paginate(int(page_id), per_page=5)
-        print shows
         if not current_user.is_anonymous():
             user = current_user.email
         links = DownloadLinks.objects(user_id=current_user.id)

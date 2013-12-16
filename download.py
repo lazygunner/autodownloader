@@ -74,10 +74,8 @@ def post_dl_status():
     links = DownloadLinks.objects.get(user_id=user_id, ed2k_link=link)
     links.delete()
 
-    print current_user.email
-    msg = Message("%s has been downloaded!" % link, recipients=current_user.email)
-    mail.send(msg)
-    
+    download_notice(link, current_user.email)
+
     link_array = []
     links = DownloadLinks.objects(user_id=user_id)
                     
@@ -98,10 +96,12 @@ def update_links(show_id):
     follow.update(set__latest_episode = data['l_e'])
 
     follow.save()
-
-    msg = Message("%s has been downloaded!" % link, recipients=current_user.email)
-    mail.send(msg)
+    
+    show = Show.objects.get(show_id=show_id)
+    download_notice(show.show_name + '\'s S' + data['l_s'] + 'E' + data['l_e'], current_user.email)
 
     return json.dumps({'status': show_id})
 
-    
+def download_notice(content, rec):
+    msg = Message(content + " has been downloaded!", sender='xdream420@gmail.com', recipients=[rec])
+    mail.send(msg)

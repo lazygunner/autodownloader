@@ -59,7 +59,10 @@ def add_new_show_thread(show):
         episode.season = item[2]
         episode.episode = item[3]
         episode.ed2k_link = item[4]
-        episode.save()
+        try:
+            episode.save()
+        except:
+            pass
         
         #update the max index
         if episode.index > max:
@@ -70,8 +73,11 @@ def add_new_show_thread(show):
     #update latest s&e in show info
     show_item.latest_season = max_s
     show_item.latest_episode = max_e
-    show_item.save()
-    
+    try:
+        show_item.save()
+    except:
+        pass
+
     return
     
 def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
