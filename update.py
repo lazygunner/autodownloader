@@ -117,7 +117,8 @@ def find_show(name='master of sex', format='HR-HDTV', season=0, episode=0):
         t.start()
         return 'ad'
     else:
-        print show_item.latest_episode
+        if _debug:
+            print show_item.latest_episode
         return show_id
     
 
@@ -169,9 +170,10 @@ def update_show(update_id, date):
 #                         episode[4]
             if e:
                 try:
-                    print e[0]['ed2k_link'] + '\n --> \n' + episode[4]
 
                     if(e[0]['ed2k_link'] != episode[4]):
+                        if _debug:
+                            print e[0]['ed2k_link'] + '\n --> \n' + episode[4]
                         e[0].update(set__ed2k_link=episode[4])
                         #client re-download after update link by change the latest episode
                         followings = Following.objects(show_id=update_id)
