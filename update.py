@@ -165,7 +165,15 @@ def update_show(update_id, date):
 #                         + '\n --> \n' + \
 #                         episode[4]
             if e:
-                e[0].update(set__ed2k_link=episode[4])
+                print e[0]['ed2k_link'] + '\n --> \n' + episode[4]
+
+                if(e[0]['ed2k_link'] != episode[4]):
+                    e[0].update(set__ed2k_link=episode[4])
+                    #client re-download after update link by change the latest episode
+                    followings = Following.objects(show_id=update_id)
+                    for f in followings:
+                        f.update(inc__latest_episode=-1)
+                
             else:
                 new_episode = Episode()
                 new_episode.show_id = update_id
