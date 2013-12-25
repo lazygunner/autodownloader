@@ -147,7 +147,10 @@ def update_show(update_id, date):
             if _debug:
                 print 'insert new episode:S' +str(new_episode.season) + \
                     'E' + str(new_episode.episode)
-            new_episode.save()
+            try:
+                new_episode.save()
+            except:
+                pass
         #update exist latest episode
         elif(int(episode[2]) == show['latest_season'] and \
              int(episode[3]) == show['latest_episode']):
@@ -165,7 +168,10 @@ def update_show(update_id, date):
 #                         + '\n --> \n' + \
 #                         episode[4]
             if e:
-                e[0].update(set__ed2k_link=episode[4])
+                try:
+                    e[0].update(set__ed2k_link=episode[4])
+                except:
+                    pass
             else:
                 new_episode = Episode()
                 new_episode.show_id = update_id
