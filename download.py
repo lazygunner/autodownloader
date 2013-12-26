@@ -92,10 +92,14 @@ def update_links(show_id):
     user_id = current_user.id
     follow = Following.objects.get(show_id=show_id, user_id=user_id)
     
-    follow.update(set__latest_season = data['l_s'])
-    follow.update(set__latest_episode = data['l_e'])
+    db_index = follow.latest_season * 100 + follow.latest_episode
+    up_index = data['l_s'] * 100 + data['l_e']
 
-    follow.save()
+    if(up_index > db_index):
+        follow.update(set__latest_season = data['l_s'])
+        follow.update(set__latest_episode = data['l_e'])
+
+        follow.save()
     
     show = Show.objects.get(show_id=show_id)
     download_notice(show.show_name + '\'s S' + data['l_s'] + 'E' + data['l_e'], current_user.email)
