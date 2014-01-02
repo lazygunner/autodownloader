@@ -35,15 +35,15 @@ def get_all_links():
 
     if count != 0:
         download_links = DownloadLinks.objects()
-    for download_link in download_links:
-        if count == 0:
-            break
-        else:
-            count -= 1
-            download_json.append({
-            "ed2k_link" : download_link.ed2k_link,
-            "type" : 'dl'
-            })
+        for download_link in download_links:
+            if count == 0:
+                break
+            else:
+                count -= 1
+                download_json.append({
+                "ed2k_link" : download_link.ed2k_link,
+                "type" : 'dl'
+                })
 
 
     return json.dumps(download_json)
