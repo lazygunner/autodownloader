@@ -16,6 +16,7 @@ app.config["SECRET_KEY"] = "kalashinikov"
 app.config['SECURITY_REGISTERABLE'] = True
 app.config['SECURITY_RECOVERABLE'] = True
 app.config['SECURITY_TRACKABLE'] = True
+app.config['SECURITY_CHANGEABLE'] = True
 app.config['SECURITY_PASSWORD_HASH'] = 'sha512_crypt'
 app.config['SECURITY_PASSWORD_SALT'] = 'gunner'
 # After 'Create app'

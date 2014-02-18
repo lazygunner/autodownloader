@@ -3,7 +3,7 @@
 from flask.ext.mongoengine.wtf import model_form
 from flask.ext.wtf import Form
 from wtforms import TextField, PasswordField, validators
-from flask import Blueprint, request, redirect, render_template, url_for, g
+from flask import Blueprint, request, redirect, render_template, url_for, g, abort
 from flask.views import MethodView
 from models import * 
 import re
@@ -29,7 +29,10 @@ class ListView(MethodView):
         user = 'Sign in'
         if not current_user.is_anonymous():
             user = current_user.email
-        paginated_shows = Show.objects.paginate(int(page_id), per_page=5)
+	try:
+     	    paginated_shows = Show.objects.paginate(int(page_id), per_page=5)
+	except:
+	    abort(404)
         return render_template('list.html', shows=paginated_shows, user=user)
 
     def post(self):
@@ -47,7 +50,10 @@ class IndexView(MethodView):
     def get(self, page_id=1):
         #shows = []
         followings = map(lambda f: f.show_id, Following.objects(user_id = current_user.id))
-        shows = Show.objects(show_id__in = followings).paginate(int(page_id), per_page=5)
+        try:
+	    shows = Show.objects(show_id__in = followings).paginate(int(page_id), per_page=5)
+        except:
+            abort(404)
         if not current_user.is_anonymous():
             user = current_user.email
         links = DownloadLinks.objects(user_id=current_user.id)
