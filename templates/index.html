@@ -4,22 +4,30 @@
 {% block content %}
 
     <script language="JavaScript" type="text/javascript" src="{{url_for('static',filename='js/index.js')}}"></script>
-        {{ show_list.render(shows) }}
-        <div>
-            <dl>
-                <dd><input class="form-control" id="add_link" type="text" in="false" value="输入链接...">
-                <button class="button" id="btn_add_link">添加链接</button>
-                </dd>
-            </dl>
-
-            <div id="link_list">
-                <ul id="linkList">
-                {% for link in links %}
-                    <li class="downloadLinks">{{link.ed2k_link}}<button class="button" id="btn_remove_link"> </button></li>
-                {% endfor %}
-                </ul>
+        <div class="bs-example">
+        <ul class ="nav nav-tabs" style="margin-bottom: 15px;">
+            <li class="active"><a href="#shows" data-toggle="tab">剧集</a></li>
+            <li><a href="#download" data-toggle="tab">远程下载</a></li>
+        </ul>
+        <div id="tabContent" class="tab-content">
+            <div class="tab-pane fade active in" id="shows">
+            {{ show_list.render(shows) }}
             </div>
+            <div class= "tab-pane fade" id=download>
+                <dl>
+                    <dd><input class="form-control" id="add_link" type="text" in="false" value="输入链接...">
+                    <button type="button" class="btn btn-primary" id="btn_add_link">添加链接</button>
+                    </dd>
+                </dl>
 
-        </div>
+                <div id="link_list">
+                    <ul id="linkList">
+                    {% for link in links %}
+                        <li class="downloadLinks">{{link.ed2k_link}}<button class="button" id="btn_remove_link"> </button></li>
+                    {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
 
 {% endblock %}
