@@ -34,9 +34,11 @@ def register_blueprints(app):
     from views import shows
     from details import details
     from download import download
+    from weibo import weiboapi
     app.register_blueprint(shows)
     app.register_blueprint(details)
     app.register_blueprint(download)
+    app.register_blueprint(weiboapi, url_prefix='/weiboapi')
 
 
 register_blueprints(app)
