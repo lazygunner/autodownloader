@@ -138,6 +138,8 @@ def _http_call(the_url, method, authorization, **kw):
         the_url = the_url.replace('https://api.', 'https://upload.api.')
         params, boundary = _encode_multipart(**kw)
     else:
+	print method
+	print kw
         params = _encode_params(**kw)
         if '/remind/' in the_url:
             # fix sina remind api:
