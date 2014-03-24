@@ -66,7 +66,10 @@ class User(db.Document):
     def get_id(self):
         return unicode(self.id)
     def get_auth_token(self):
-        return make_secure_token(self.user_id, self.password)
+        a = make_secure_token(str(self.id), self.password)
+	print a
+	return a
+
 #    def set_password(self, password):
 #        self.password = generate_password_hash(password)
 #    def check_password(self, password):

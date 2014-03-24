@@ -22,7 +22,7 @@ def get_all_links():
         new_index = int(follow.latest_season) * 100 + int(follow.latest_episode)
         episodes = Episode.objects(show_id=follow.show_id,format=follow.show_format, index__gt=new_index)
         episodes = sorted(episodes, key = lambda x:x['index'])
-        print episodes
+        #print episodes
         for episode in episodes:
             if count == 0:
                 break

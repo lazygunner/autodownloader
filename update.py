@@ -14,6 +14,9 @@ _debug = True
 
 base_url = 'http://www.yyets.com/resource/'
 query_url = 'http://www.yyets.com/search/api?keyword='
+update_interval = 60 * 60 #seconds
+thread_count = 5
+
 def find_episodes(show_id='11005', format='.*?'):
     #get episodes through YYets resource page
     if _debug:
@@ -253,6 +256,7 @@ def update_routine():
         print 'There is no following shows in the db!'
         return
     found = False
+    total = 0
     #match updates in RSS with shows in dba
     update_list = []
     for show in shows:
@@ -265,23 +269,30 @@ def update_routine():
         if new_update_time!= None:
 	        #update_show(show['show_id'], new_update_time)
             update_list.append(((),{'update_id':show['show_id'], 'date':new_update_time}))
+            total += 1
             if _debug:
 	            print 'found update'
         else:
             if _debug:
                 print 'no update'
-    pool = threadpool.ThreadPool(5)
-    requests = threadpool.makeRequests(update_show, update_list)
-    [pool.putRequest(req) for req in requests]
-    pool.wait()
+    if total > 0:
+        if total > thread_count:
+            total = thread_count
+        pool = threadpool.ThreadPool(total)
+        requests = threadpool.makeRequests(update_show, update_list)
+        [pool.putRequest(req) for req in requests]
+        pool.wait()
+
     if _debug:
         print 'finished all threads.' 
+
 
 def update_thread():
     while(True):
        print 'update...'
        update_routine()
-       time.sleep(60 * 60)
+       time.sleep(update_interval)
+
 def thread():
     t = threading.Thread(target = update_thread, args = (), name = 'update_thread')
     t.start()
